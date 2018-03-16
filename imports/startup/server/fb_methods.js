@@ -15,8 +15,8 @@ Meteor.methods({
 	},
 	 "get_pages"(name,longToken) {
 	 	console.log("longtoken",longToken);
-	     let baseUrl = "https://graph.facebook.com/v2.12/"
-		let path = 'search?type=page'
+	    let baseUrl = "https://graph.facebook.com/v2.12/"
+		let path = 'search?type=page&fields=name,cover,fan_count,rating_count,overall_star_rating,picture'
 		let clientID = "155683401740536"
 		let clientSecret = "11933476b49bb36fea55d12aa82da6ca"
 

@@ -9,5 +9,11 @@ Meteor.methods({
 	},
 	"get_long_token"(type){
 		return Token.findOne({ type: type });
+	},
+	"insert.pages"(name, details){
+		return Token.insert({name, details});
+	},
+	"find.pages"(name){
+		return Token.findOne({ name });
 	}
 })

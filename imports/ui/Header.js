@@ -16,23 +16,62 @@ export default class Header extends Component{
 
 	search(){
 		console.log(this.state.query)
-		Meteor.call("get_long_token", "long", (err, res) => {
-			if(err){
-				console.log("err : ", err)
-			}
-			else{
-				console.log("res : ", res)
-				Meteor.call("get_pages", this.state.query,res, (err, res) => {
-					if(err)
-						console.log(err)
-					else{
-						console.log("res", res);
-						this.setState({data: res})
-					}
-				})
 
+		Meteor.call("find.pages", this.state.query, (err, res) => {
+			if(err)
+				console.log(err)
+			else{
+				console.log("result of searching page : ", res)
+				if(res === undefined){
+					console.log("hitting  api")
+					Meteor.call("get_long_token", "long", (err, res) => {
+						if(err){
+							console.log("err : ", err)
+						}
+						else{
+							Meteor.call("get_pages", this.state.query,res, (err, res) => {
+								if(err)
+									console.log(err)
+								else{
+									console.log("res", res.data.data);
+									Meteor.call("insert.pages", this.state.query, res.data.data);
+									this.setState({data: res.data.data})
+								}
+							})
+
+						}
+					})
+				}
+				else{
+					this.setState({data: res.details})
+					console.log("already exist")
+				}
 			}
 		})
+
+
+		// Meteor.call("get_long_token", "long", (err, res) => {
+		// 	if(err){
+		// 		console.log("err : ", err)
+		// 	}
+		// 	else{
+		// 		// console.log("res : ", res)
+		// 		Meteor.call("get_pages", this.state.query,res, (err, res) => {
+		// 			if(err)
+		// 				console.log(err)
+		// 			else{
+		// 				console.log("res", res.data.data);
+		// 				Meteor.call("insert.pages", this.state.query, res.data.data);
+		// 				this.setState({data: res})
+		// 			}
+		// 		})
+
+		// 	}
+		// })
+
+
+
+
 	}
 
 
@@ -95,19 +134,7 @@ export default class Header extends Component{
 
 
 
-			<ul className="nav navbar-nav navbar-right">
-			<li><a href="#">Link</a></li>
-			<li className="dropdown">
-			<a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span className="caret"></span></a>
-			<ul className="dropdown-menu">
-			<li><a href="#">Action</a></li>
-			<li><a href="#">Another action</a></li>
-			<li><a href="#">Something else here</a></li>
-			<li role="separator" className="divider"></li>
-			<li><a href="#">Separated link</a></li>
-			</ul>
-			</li>
-			</ul>
+			
 			</div>
 			</div>
 			</nav>
@@ -115,7 +142,7 @@ export default class Header extends Component{
 				this.state.data !== null
 				?
 				<Table 
-					data = {this.state.data}
+				data = {this.state.data}
 				/>
 				:
 				<div></div>
